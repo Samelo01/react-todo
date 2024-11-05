@@ -2,8 +2,8 @@ import * as React from 'react';
 
 const todoList = [
   { id: 1, title: "Complete assignment" },
-  { id: 2, title: "Read a book" },
-  { id: 3, title: "Go grocery shopping" },
+  { id: 2, title: "Review code" },
+  { id: 3, title: "Submit project" }
 ];
 
 function App() {
