@@ -1,22 +1,25 @@
+// /src/App.jsx
 import React, { useState } from 'react';
-import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
+import TodoList from './TodoList';
 
 const App = () => {
-  const [todoList, setTodoList] = useState([]);  // State to hold todos
+    const [todos, setTodos] = useState([]);
+    const [newTodo, setNewTodo] = useState('');
 
-  const addTodo = (title) => {
-    const newTodo = { title, id: Date.now() };
-    setTodoList([...todoList, newTodo]);  // Update todoList state
-  };
+    const handleAddTodo = (todoTitle) => {
+        setTodos([...todos, { id: Date.now(), title: todoTitle }]);
+        setNewTodo(todoTitle);
+    };
 
-  return (
-    <div>
-      <h1>Todo List</h1>
-      <AddTodoForm addTodo={addTodo} />
-      <TodoList todoList={todoList} />
-    </div>
-  );
+    return (
+        <div>
+            <AddTodoForm onAddTodo={handleAddTodo} />
+            <p>New Todo: {newTodo}</p>
+            <TodoList todos={todos} />
+        </div>
+    );
 };
 
 export default App;
+
