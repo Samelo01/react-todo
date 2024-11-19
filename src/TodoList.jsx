@@ -1,6 +1,5 @@
-// src/TodoList.jsx
 import React from 'react';
-import TodoListItem from './TodoListItem';  // Import TodoListItem
+import TodoListItem from './TodoListItem'; 
 
 function TodoList() {
   const todos = ['Task 1', 'Task 2'];
