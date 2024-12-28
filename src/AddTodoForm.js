@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 
-const AddTodoForm = ({ todoList, setTodoList }) => {
-  const [todo, setTodo] = useState("");
+const AddTodoForm = ({ addTodo }) => {
+  const [newTodo, setNewTodo] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (todo.trim()) {
-      setTodoList([...todoList, { id: Date.now(), text: todo }]);
-      setTodo("");
+    if (newTodo.trim()) {
+      addTodo(newTodo);
+      setNewTodo("");
     }
   };
 
@@ -15,11 +15,13 @@ const AddTodoForm = ({ todoList, setTodoList }) => {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
+        id="newTodo"
+        name="newTodo"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
         placeholder="Add a new todo"
       />
-      <button type="submit">Add Todo</button>
+      <button type="submit">Add</button>
     </form>
   );
 };

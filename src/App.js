@@ -6,18 +6,19 @@ const App = () => {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  
   useEffect(() => {
-    const fetchData = () => {
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ data: { todoList: [] } });
-        }, 2000);
-      }).then((result) => {
-        setTodoList(result.data.todoList);
-        setIsLoading(false);
-      });
-    };
-    fetchData();
+    const fetchData = new Promise((resolve) => {
+      setTimeout(() => {
+        const savedTodos = JSON.parse(localStorage.getItem("todoList")) || [];
+        resolve({ data: { todoList: savedTodos } });
+      }, 2000);
+    });
+
+    fetchData.then((result) => {
+      setTodoList(result.data.todoList);
+      setIsLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -26,15 +27,23 @@ const App = () => {
     }
   }, [todoList, isLoading]);
 
+  const addTodo = (newTodo) => {
+    setTodoList([...todoList, { id: Date.now(), text: newTodo }]);
+  };
+
+  const removeTodo = (id) => {
+    setTodoList(todoList.filter((todo) => todo.id !== id));
+  };
+
   return (
     <div>
-      <h1>Todo App</h1>
+      <h1>Todo List</h1>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
         <>
-          <AddTodoForm todoList={todoList} setTodoList={setTodoList} />
-          <TodoList todoList={todoList} setTodoList={setTodoList} />
+          <AddTodoForm addTodo={addTodo} />
+          <TodoList todoList={todoList} removeTodo={removeTodo} />
         </>
       )}
     </div>
