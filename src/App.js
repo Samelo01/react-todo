@@ -1,51 +1,95 @@
 import React, { useState, useEffect } from "react";
 import AddTodoForm from "./AddTodoForm";
-import TodoList from "./TodoList";
+
+// Airtable API details
+const API_BASE = "https://api.airtable.com/v0/appG0eZm9k8QxyX4G/Default"; // Correct Base ID
+const HEADERS = {
+  Authorization: `Bearer patgzRbxdSabSy0Xr.72ba65f33002e147496cb710c86a48c77dbfe3fc5f0e630aae3dfc3182a676d5`, // Correct token format
+  "Content-Type": "application/json",
+};
 
 const App = () => {
-  const [todoList, setTodoList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [todos, setTodos] = useState([]);
 
-  
-  useEffect(() => {
-    const fetchData = new Promise((resolve) => {
-      setTimeout(() => {
-        const savedTodos = JSON.parse(localStorage.getItem("todoList")) || [];
-        resolve({ data: { todoList: savedTodos } });
-      }, 2000);
-    });
-
-    fetchData.then((result) => {
-      setTodoList(result.data.todoList);
-      setIsLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem("todoList", JSON.stringify(todoList));
+  // Fetch data from Airtable
+  const fetchData = async () => {
+    try {
+      const response = await fetch(API_BASE, { headers: HEADERS });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+      const data = await response.json();
+      setTodos(data.records);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-  }, [todoList, isLoading]);
-
-  const addTodo = (newTodo) => {
-    setTodoList([...todoList, { id: Date.now(), text: newTodo }]);
   };
 
-  const removeTodo = (id) => {
-    setTodoList(todoList.filter((todo) => todo.id !== id));
+  // Add a new todo to Airtable
+  const addTodo = async (todoText) => {
+    if (!todoText) {
+      console.error("Todo text is required");
+      return;
+    }
+
+    const newRecord = {
+      fields: { Title: todoText }, // Use the correct field name "Title"
+    };
+
+    try {
+      const response = await fetch(API_BASE, {
+        method: "POST",
+        headers: HEADERS,
+        body: JSON.stringify({ records: [newRecord] }), // Ensure correct structure for records
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add todo: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setTodos((prevTodos) => [...prevTodos, ...data.records]); // Use data.records to update todos
+    } catch (error) {
+      console.error("Failed to add todo:", error.message);
+    }
   };
+
+  // Remove a todo from Airtable
+  const removeTodo = async (todoId) => {
+    try {
+      const response = await fetch(`${API_BASE}/${todoId}`, {
+        method: "DELETE",
+        headers: HEADERS,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to remove todo: ${response.status}`);
+      }
+
+      // Remove the deleted todo from state
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
+    } catch (error) {
+      console.error("Failed to remove todo:", error.message);
+    }
+  };
+
+  // Fetch data when the component mounts
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
       <h1>Todo List</h1>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <AddTodoForm addTodo={addTodo} />
-          <TodoList todoList={todoList} removeTodo={removeTodo} />
-        </>
-      )}
+      <AddTodoForm onAddTodo={addTodo} />
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            {todo.fields.Title}{" "}
+            <button onClick={() => removeTodo(todo.id)}>Remove</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
