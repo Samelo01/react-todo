@@ -1,3 +1,4 @@
+// src/AddTodoForm.js
 import React, { useState } from "react";
 
 const AddTodoForm = ({ onAddTodo }) => {
@@ -5,7 +6,11 @@ const AddTodoForm = ({ onAddTodo }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddTodo(todoText);
+    if (!todoText.trim()) {
+      console.error("Todo text is required");
+      return;
+    }
+    onAddTodo(todoText.trim());
     setTodoText(""); // Clear input after adding
   };
 

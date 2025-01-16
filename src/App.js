@@ -1,10 +1,12 @@
+// src/App.js
 import React, { useState, useEffect } from "react";
 import AddTodoForm from "./AddTodoForm";
+import TodoList from "./TodoList";
 
 // Airtable API details
-const API_BASE = "https://api.airtable.com/v0/appG0eZm9k8QxyX4G/Default"; // Correct Base ID
+const API_BASE = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_AIRTABLE_TABLE_NAME}`; // Correct Base ID
 const HEADERS = {
-  Authorization: `Bearer patgzRbxdSabSy0Xr.72ba65f33002e147496cb710c86a48c77dbfe3fc5f0e630aae3dfc3182a676d5`, // Correct token format
+  Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
   "Content-Type": "application/json",
 };
 
@@ -22,25 +24,21 @@ const App = () => {
       setTodos(data.records);
     } catch (error) {
       console.error("Error fetching data:", error);
+      throw error; // Throw the error as suggested
     }
   };
 
   // Add a new todo to Airtable
   const addTodo = async (todoText) => {
-    if (!todoText) {
-      console.error("Todo text is required");
-      return;
-    }
-
     const newRecord = {
-      fields: { Title: todoText }, // Use the correct field name "Title"
+      fields: { Title: todoText },
     };
 
     try {
       const response = await fetch(API_BASE, {
         method: "POST",
         headers: HEADERS,
-        body: JSON.stringify({ records: [newRecord] }), // Ensure correct structure for records
+        body: JSON.stringify({ records: [newRecord] }),
       });
 
       if (!response.ok) {
@@ -48,9 +46,10 @@ const App = () => {
       }
 
       const data = await response.json();
-      setTodos((prevTodos) => [...prevTodos, ...data.records]); // Use data.records to update todos
+      setTodos((prevTodos) => [...prevTodos, ...data.records]);
     } catch (error) {
       console.error("Failed to add todo:", error.message);
+      throw error; // Throw the error as suggested
     }
   };
 
@@ -70,6 +69,7 @@ const App = () => {
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
     } catch (error) {
       console.error("Failed to remove todo:", error.message);
+      throw error; // Throw the error as suggested
     }
   };
 
@@ -85,7 +85,7 @@ const App = () => {
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
-            {todo.fields.Title}{" "}
+            {todo.fields.Title}
             <button onClick={() => removeTodo(todo.id)}>Remove</button>
           </li>
         ))}
