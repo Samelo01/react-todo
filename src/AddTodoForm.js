@@ -1,27 +1,31 @@
+// src/AddTodoForm.js
 import React, { useState } from "react";
 
-const AddTodoForm = ({ addTodo }) => {
-  const [newTodo, setNewTodo] = useState("");
+const AddTodoForm = ({ onAddTodo }) => {
+  const [todoText, setTodoText] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (newTodo.trim()) {
-      addTodo(newTodo);
-      setNewTodo("");
+    if (!todoText.trim()) {
+      console.error("Todo text is required");
+      return;
     }
+    onAddTodo(todoText.trim());
+    setTodoText(""); // Clear input after adding
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      <label htmlFor="todo-input">Add Todo:</label>
       <input
         type="text"
-        id="newTodo"
-        name="newTodo"
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="Add a new todo"
+        id="todo-input" // Added id for better accessibility
+        name="todoText" // Added name attribute for autofill and form submission
+        value={todoText}
+        onChange={(e) => setTodoText(e.target.value)}
+        required
       />
-      <button type="submit">Add</button>
+      <button type="submit">Add Todo</button>
     </form>
   );
 };
