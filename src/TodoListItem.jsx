@@ -1,10 +1,9 @@
-// src/TodoListItem.jsx
 import React from "react";
 
-const TodoListItem = ({ todo, removeTodo }) => (
+const TodoListItem = ({ todo, onRemoveTodo }) => (
   <li>
-    {todo.fields.Title}
-    <button onClick={() => removeTodo(todo.id)}>Remove</button>
+    <span>{todo.fields.Title}</span>
+    <button onClick={() => onRemoveTodo(todo.id)}>Remove</button>
   </li>
 );
 
