@@ -1,10 +1,10 @@
-// src/App.js
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AddTodoForm from "./AddTodoForm";
 import TodoList from "./TodoList";
 
 // Airtable API details
-const API_BASE = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_AIRTABLE_TABLE_NAME}`; // Correct Base ID
+const API_BASE = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_AIRTABLE_TABLE_NAME}`;
 const HEADERS = {
   Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
   "Content-Type": "application/json",
@@ -24,7 +24,6 @@ const App = () => {
       setTodos(data.records);
     } catch (error) {
       console.error("Error fetching data:", error);
-      throw error; // Throw the error as suggested
     }
   };
 
@@ -49,7 +48,6 @@ const App = () => {
       setTodos((prevTodos) => [...prevTodos, ...data.records]);
     } catch (error) {
       console.error("Failed to add todo:", error.message);
-      throw error; // Throw the error as suggested
     }
   };
 
@@ -65,11 +63,9 @@ const App = () => {
         throw new Error(`Failed to remove todo: ${response.status}`);
       }
 
-      // Remove the deleted todo from state
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
     } catch (error) {
       console.error("Failed to remove todo:", error.message);
-      throw error; // Throw the error as suggested
     }
   };
 
@@ -78,7 +74,7 @@ const App = () => {
     fetchData();
   }, []);
 
-  return (
+  const TodoPage = () => (
     <div>
       <h1>Todo List</h1>
       <AddTodoForm onAddTodo={addTodo} />
@@ -91,6 +87,21 @@ const App = () => {
         ))}
       </ul>
     </div>
+  );
+
+  const NewTodoPage = () => (
+    <div>
+      <h1>New Todo List</h1>
+    </div>
+  );
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<TodoPage />} />
+        <Route path="/new" element={<NewTodoPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
