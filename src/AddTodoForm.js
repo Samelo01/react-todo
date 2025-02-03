@@ -1,17 +1,18 @@
-// src/AddTodoForm.js
 import React, { useState } from "react";
 
 const AddTodoForm = ({ onAddTodo }) => {
   const [todoText, setTodoText] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!todoText.trim()) {
-      console.error("Todo text is required");
+      setError("Todo text is required.");
       return;
     }
     onAddTodo(todoText.trim());
     setTodoText(""); // Clear input after adding
+    setError(""); // Clear any previous error
   };
 
   return (
@@ -19,13 +20,15 @@ const AddTodoForm = ({ onAddTodo }) => {
       <label htmlFor="todo-input">Add Todo:</label>
       <input
         type="text"
-        id="todo-input" // Added id for better accessibility
-        name="todoText" // Added name attribute for autofill and form submission
+        id="todo-input"
+        name="todoText"
         value={todoText}
         onChange={(e) => setTodoText(e.target.value)}
         required
+        aria-describedby="error-message" // Accessibility improvement
       />
       <button type="submit">Add Todo</button>
+      {error && <p id="error-message" style={{ color: "red" }}>{error}</p>} {/* Display error message */}
     </form>
   );
 };
