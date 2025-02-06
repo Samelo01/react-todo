@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AddTodoForm from "./AddTodoForm";
-import TodoList from "./TodoList";
+import styles from "./TodoListItem.module.css";
 
 // Airtable API details
 const API_BASE = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_AIRTABLE_TABLE_NAME}`;
@@ -29,9 +29,7 @@ const App = () => {
 
   // Add a new todo to Airtable
   const addTodo = async (todoText) => {
-    const newRecord = {
-      fields: { Title: todoText },
-    };
+    const newRecord = { fields: { Title: todoText } };
 
     try {
       const response = await fetch(API_BASE, {
@@ -80,9 +78,14 @@ const App = () => {
       <AddTodoForm onAddTodo={addTodo} />
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>
+          <li key={todo.id} className={styles.ListItem}>
             {todo.fields.Title}
-            <button onClick={() => removeTodo(todo.id)}>Remove</button>
+            <button
+              className={styles.RemoveButton}
+              onClick={() => removeTodo(todo.id)}
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>
