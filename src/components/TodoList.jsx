@@ -1,14 +1,22 @@
 import React from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import TodoListItem from "./TodoListItem";
 
-const TodoList = ({ todos, onRemoveTodo }) => (
-  <ul>
-    {todos.map((todo) => (
-      <TodoListItem key={todo.id} todo={todo} onRemoveTodo={onRemoveTodo} />
-    ))}
-  </ul>
-);
+const TodoList = ({ todos, onRemoveTodo }) => {
+  console.log("Rendering Todo List with todos:", todos); // Log todos received
+
+  return (
+    <ul>
+      {todos.length > 0 ? (
+        todos.map((todo) => (
+          <TodoListItem key={todo.id} todo={todo} onRemoveTodo={onRemoveTodo} />
+        ))
+      ) : (
+        <p>No todos yet.</p>
+      )}
+    </ul>
+  );
+};
 
 TodoList.propTypes = {
   todos: PropTypes.arrayOf(
