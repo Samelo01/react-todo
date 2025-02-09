@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 
 const AddTodoForm = ({ onAddTodo }) => {
   const [todoText, setTodoText] = useState("");
@@ -31,6 +32,10 @@ const AddTodoForm = ({ onAddTodo }) => {
       {error && <p id="error-message" style={{ color: "red" }}>{error}</p>} {/* Display error message */}
     </form>
   );
+};
+
+AddTodoForm.propTypes = {
+  onAddTodo: PropTypes.func.isRequired, // Ensures onAddTodo is a function
 };
 
 export default AddTodoForm;
