@@ -3,11 +3,18 @@ import React, { useState } from "react";
 const TodoForm = ({ onSubmit }) => {
   const [text, setText] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (text.trim()) {
-      onSubmit(text);
-      setText("");
+    if (!text.trim()) return;
+
+    console.log("Submitting todo:", text); // Log todo being submitted
+
+    try {
+      await onSubmit(text);
+      console.log("Todo submitted successfully:", text); // Log success
+      setText(""); // ✅ Clear input
+    } catch (error) {
+      console.error("Error adding todo:", error); // Log error
     }
   };
 
