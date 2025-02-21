@@ -1,29 +1,63 @@
-/* Global Styles - Apply to the body */
+/* Global Styles */
 body {
-  background-color: #6c2689; 
-  color: #ecf0f1; 
-  font-family: 'Poppins', sans-serif; 
+  background-color: #6c2689;
+  color: #ecf0f1;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100vh; 
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
 }
 
-/* Search Bar */
-input[type="text"] {
+/* Navigation Styles */
+nav {
+  background-color: #071b0c;
+  padding: 10px 20px;
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #2980b9; 
-  border-radius: 5px;
-  background-color: #f39c12;
-  color: #34495e; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-input[type="text"]::placeholder {
-  color: #7f8c8d; 
+/* Link Styles (Home and Todos) */
+.home-link, .todos-link {
+  color: #eb2449; /* Default color for the links */
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px 15px;
+  transition: color 0.3s ease;
+}
+
+/* Hover Effect */
+.home-link:hover, .todos-link:hover {
+  color: #12e74e; /* Color when hovering over the links */
+}
+
+/* Todo List */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Buttons */
+button {
+  background-color: #2980b9;
+  border: none;
+  color: rgb(236, 229, 229);
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3adc68;
 }
 
 /* Responsive Design */
@@ -31,9 +65,14 @@ input[type="text"]::placeholder {
   body {
     padding: 10px;
   }
-  
-  input[type="text"] {
-    font-size: 14px;
-    padding: 8px;
+
+  nav {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  nav a {
+    display: block;
+    padding: 10px;
   }
 }
