@@ -10,6 +10,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Completed Todo Styles */
+.ListItem.Completed {
+  background-color: #2ecc71; /* Green background for completed */
+  color: #95a5a6; /* Lighter gray color for completed todos */
 }
 
 /* Remove Button */
@@ -27,6 +34,21 @@
 
 .RemoveButton:hover {
   background-color: #c0392b;
+}
+
+/* Toggle Complete Button */
+.ToggleCompleteButton {
+  background-color: transparent;
+  border: none;
+  color: #ecf0f1;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.ToggleCompleteButton:hover {
+  color: #3498db;
 }
 
 /* Toggle Sort Button */
