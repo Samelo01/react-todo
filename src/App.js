@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import AddTodoForm from "./components/AddTodoForm";
 import styles from "./components/TodoListItem.module.css";
+import { FaTasks, FaSort } from "react-icons/fa";
+import './components/App.css';
 
-// Airtable API details
 const API_BASE = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_AIRTABLE_TABLE_NAME}`;
 const HEADERS = {
   Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
@@ -14,8 +15,8 @@ const App = () => {
   const [todos, setTodos] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // Fetch data sorted by Airtable field (Title)
-  const fetchDataByField = async () => {
+  // Fetch sorted data from Airtable (memoized)
+  const fetchDataByField = useCallback(async () => {
     try {
       const response = await fetch(
         `${API_BASE}?sort[0][field]=Title&sort[0][direction]=${sortOrder}`,
@@ -27,41 +28,53 @@ const App = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }, [sortOrder]);
 
   useEffect(() => {
     fetchDataByField();
-  }, [sortOrder]);
+  }, [fetchDataByField]);
 
-  // Toggle sorting order
   const toggleSortOrder = () => {
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
-  // Function to add a new todo to Airtable
   const handleAddTodo = async (todoText) => {
     try {
       const response = await fetch(API_BASE, {
         method: "POST",
         headers: HEADERS,
-        body: JSON.stringify({ records: [{ fields: { Title: todoText } }] }),
+        body: JSON.stringify({ records: [{ fields: { Title: todoText, Completed: false } }] }),
       });
-
       if (!response.ok) throw new Error(`Failed to add todo: ${response.status}`);
-      await fetchDataByField(); // Refresh todos after adding
+      await fetchDataByField(); // Refresh todos
     } catch (error) {
       console.error("Error adding todo:", error);
     }
   };
 
-  // Function to remove a todo
+  // Toggle completed status
+  const toggleCompleted = async (id, currentStatus) => {
+    try {
+      const response = await fetch(`${API_BASE}/${id}`, {
+        method: "PATCH",
+        headers: HEADERS,
+        body: JSON.stringify({
+          fields: { Completed: !currentStatus }, // Toggle the completion status
+        }),
+      });
+      if (!response.ok) throw new Error(`Failed to update todo: ${response.status}`);
+      await fetchDataByField(); // Refresh todos
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
+  };
+
   const removeTodo = async (id) => {
     try {
       const response = await fetch(`${API_BASE}/${id}`, {
         method: "DELETE",
         headers: HEADERS,
       });
-
       if (!response.ok) throw new Error(`Failed to remove todo: ${response.status}`);
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
     } catch (error) {
@@ -71,16 +84,28 @@ const App = () => {
 
   const TodoPage = () => (
     <div>
-      <h1>Todo List</h1>
+      <h1>Todo List <FaTasks /></h1>
       <AddTodoForm onAddTodo={handleAddTodo} />
       <button className={styles.ToggleButton} onClick={toggleSortOrder}>
-        Toggle Sort Order ({sortOrder === "asc" ? "Z-A" : "A-Z"})
+        <FaSort /> Toggle Sort Order ({sortOrder === "asc" ? "Z-A" : "A-Z"})
       </button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id} className={styles.ListItem}>
+          <li
+            key={todo.id}
+            className={`${styles.ListItem} ${todo.fields.Completed ? styles.Completed : ""}`}
+          >
             {todo.fields.Title}
-            <button className={styles.RemoveButton} onClick={() => removeTodo(todo.id)}>
+            <button
+              className={styles.ToggleCompleteButton}
+              onClick={() => toggleCompleted(todo.id, todo.fields.Completed)}
+            >
+              {todo.fields.Completed ? "✔" : "❌"} {/* Show checkmark or X */}
+            </button>
+            <button
+              className={styles.RemoveButton}
+              onClick={() => removeTodo(todo.id)}
+            >
               Remove
             </button>
           </li>
@@ -88,11 +113,17 @@ const App = () => {
       </ul>
     </div>
   );
-
+  
   return (
     <BrowserRouter>
+      <nav>
+        <Link to="/" className="home-link">Home</Link>
+        <Link to="/todos" className="todos-link">Todos</Link>
+      </nav>
+
       <Routes>
-        <Route path="/" element={<TodoPage />} />
+        <Route path="/" element={<h1>Welcome to Todo App</h1>} />
+        <Route path="/todos" element={<TodoPage />} />
       </Routes>
     </BrowserRouter>
   );

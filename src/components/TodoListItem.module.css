@@ -1,67 +1,67 @@
 /* Todo List Item Styles */
 .ListItem {
-    color: #ecf0f1; 
-    font-size: 18px;
-    font-weight: bold;
-    padding: 10px;
-    background-color: #2980b9;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  /* Remove Button */
-  .RemoveButton {
-    background-color: #e74c3c; 
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .RemoveButton:hover {
-    background-color: #c0392b; 
-  }
-  
-  /* Global Styles */
-  body {
-    background-color: #6c2689; 
-    color: #ecf0f1; 
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column; 
-    justify-content: flex-start;
-    align-items: center; 
-    height: 100vh;
-    text-align: center; 
-  }
-  
-  /* Center the Todo List title */
-  h1 {
-    text-align: center; 
-    color: #f39c12; 
-    font-size: 36px; 
-    margin-bottom: 20px; 
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .ListItem {
-      font-size: 16px;
-      padding: 8px;
-    }
-    
-    .RemoveButton {
-      font-size: 12px;
-      padding: 4px 8px;
-    }
-  }
-  
+  color: #ecf0f1;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #2980b9;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Completed Todo Styles */
+.ListItem.Completed {
+  background-color: #2ecc71; /* Green background for completed */
+  color: #95a5a6; /* Lighter gray color for completed todos */
+}
+
+/* Remove Button */
+.RemoveButton {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.RemoveButton:hover {
+  background-color: #c0392b;
+}
+
+/* Toggle Complete Button */
+.ToggleCompleteButton {
+  background-color: transparent;
+  border: none;
+  color: #ecf0f1;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.ToggleCompleteButton:hover {
+  color: #3498db;
+}
+
+/* Toggle Sort Button */
+.ToggleButton {
+  background-color: #f39c12;
+  color: #2c3e50;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ToggleButton:hover {
+  background-color: #d68910;
+}
